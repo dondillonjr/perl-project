@@ -1,0 +1,47 @@
+#!/usr/bin/perl
+use 5.006;
+use strict;
+use warnings;
+
+#$_ =`dir`;
+#print;
+my $fileName = 'C:\temp\configFile.txt';
+my $log_File  = 'C:\temp\config';
+print "READFILE= $fileName\n\n";
+
+sub readConfigFile 
+{
+	if ( -r $fileName  && -e $fileName )  
+	{
+		return(1);
+	}
+	else
+	{
+		print "File $fileName : does not exit\n";
+		exit;
+	}
+}
+
+sub logFile 
+{
+	my @holder  = localtime;
+	my $month  = $holder[4] + 1;
+	my $year   = $holder[5] + 1900;
+	$log_File = "$log_File" . "_${month}" . "_${holder[3]}" . "_${year}" . "_${holder[2]}" . "_${holder[1]}" . "_${holder[0]}" . ".log";
+	open ( LOGFILE, ">$log_File" ) || die "Openning $log_File";
+	print "LogFILE=  $log_File\n\n";
+}
+
+if ( readConfigFile( $fileName ) )
+{
+	logFile ( $log_File ); 
+	open (CONFIG_FILE, $fileName);
+
+	while (defined ( my $record =<CONFIG_FILE>))
+	{
+		print $record;
+		print LOGFILE $record;
+	}
+	close(LOGFILE);
+	close(CONFIG_FILE);
+}
